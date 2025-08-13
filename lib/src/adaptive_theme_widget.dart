@@ -100,9 +100,11 @@ class _AdaptiveThemeWidgetState extends State<AdaptiveThemeWidget>
 
   Widget _buildWithTransition(Widget child) {
     if (!_provider.isInitialized) {
-      return MaterialApp(
-        theme: widget.config.lightTheme,
-        home: child,
+      return AnimatedTheme(
+        duration: widget.config.transitionDuration,
+        curve: widget.config.transitionCurve,
+        data: widget.config.lightTheme,
+        child: child,
       );
     }
 
