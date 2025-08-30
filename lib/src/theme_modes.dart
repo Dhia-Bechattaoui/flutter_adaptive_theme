@@ -51,7 +51,7 @@ extension AdaptiveThemeModeExtension on AdaptiveThemeMode {
   }
 
   /// Creates an AdaptiveThemeMode from a string value
-  static AdaptiveThemeMode fromString(String value) {
+  static AdaptiveThemeMode fromString(final String value) {
     switch (value) {
       case 'system':
         return AdaptiveThemeMode.system;

@@ -29,24 +29,24 @@ class AdaptiveThemeProvider extends ChangeNotifier {
   bool get isInitialized => _adaptiveTheme != null;
 
   /// Initialize the provider with configuration
-  Future<void> initialize(AdaptiveThemeConfig config) async {
+  Future<void> initialize(final AdaptiveThemeConfig config) async {
     _config = config;
     _adaptiveTheme = AdaptiveTheme();
     await _adaptiveTheme!.initialize(config);
 
     // Listen to theme changes
-    _adaptiveTheme?.themeStream.listen((theme) {
+    _adaptiveTheme?.themeStream.listen((final ThemeData theme) {
       notifyListeners();
     });
 
     // Listen to mode changes
-    _adaptiveTheme?.modeStream.listen((mode) {
+    _adaptiveTheme?.modeStream.listen((final AdaptiveThemeMode mode) {
       notifyListeners();
     });
   }
 
   /// Set the theme mode
-  Future<void> setMode(AdaptiveThemeMode mode) async {
+  Future<void> setMode(final AdaptiveThemeMode mode) async {
     await _adaptiveTheme?.setMode(mode);
   }
 
@@ -56,7 +56,7 @@ class AdaptiveThemeProvider extends ChangeNotifier {
   }
 
   /// Update the configuration
-  Future<void> updateConfig(AdaptiveThemeConfig newConfig) async {
+  Future<void> updateConfig(final AdaptiveThemeConfig newConfig) async {
     await _adaptiveTheme?.updateConfig(newConfig);
     _config = newConfig;
   }

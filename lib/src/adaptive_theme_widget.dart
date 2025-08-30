@@ -5,6 +5,13 @@ import 'theme_config.dart';
 
 /// Widget that provides adaptive theme functionality to the widget tree
 class AdaptiveThemeWidget extends StatefulWidget {
+  const AdaptiveThemeWidget({
+    super.key,
+    required this.config,
+    required this.child,
+    this.debug = false,
+  });
+
   /// The configuration for the adaptive theme
   final AdaptiveThemeConfig config;
 
@@ -13,13 +20,6 @@ class AdaptiveThemeWidget extends StatefulWidget {
 
   /// Whether to show debug information
   final bool debug;
-
-  const AdaptiveThemeWidget({
-    super.key,
-    required this.config,
-    required this.child,
-    this.debug = false,
-  });
 
   @override
   State<AdaptiveThemeWidget> createState() => _AdaptiveThemeWidgetState();
@@ -75,30 +75,35 @@ class _AdaptiveThemeWidgetState extends State<AdaptiveThemeWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return ChangeNotifierProvider.value(
       value: _provider,
       child: Consumer<AdaptiveThemeProvider>(
-        builder: (context, provider, child) {
-          return AnimatedBuilder(
-            animation: _animation,
-            builder: (context, child) {
-              return MaterialApp(
-                theme: provider.theme,
-                debugShowCheckedModeBanner: widget.debug,
-                home: widget.child,
-                builder: (context, child) {
-                  return _buildWithTransition(child!);
+        builder:
+            (
+              final BuildContext context,
+              final AdaptiveThemeProvider provider,
+              final Widget? child,
+            ) {
+              return AnimatedBuilder(
+                animation: _animation,
+                builder: (final BuildContext context, final Widget? child) {
+                  return MaterialApp(
+                    theme: provider.theme,
+                    debugShowCheckedModeBanner: widget.debug,
+                    home: widget.child,
+                    builder: (final BuildContext context, final Widget? child) {
+                      return _buildWithTransition(child!);
+                    },
+                  );
                 },
               );
             },
-          );
-        },
       ),
     );
   }
 
-  Widget _buildWithTransition(Widget child) {
+  Widget _buildWithTransition(final Widget child) {
     if (!_provider.isInitialized) {
       return AnimatedTheme(
         duration: widget.config.transitionDuration,
@@ -119,6 +124,15 @@ class _AdaptiveThemeWidgetState extends State<AdaptiveThemeWidget>
 
 /// Widget that provides a simple way to wrap your app with adaptive theme
 class AdaptiveThemeApp extends StatelessWidget {
+  const AdaptiveThemeApp({
+    super.key,
+    required this.config,
+    required this.home,
+    this.routes,
+    this.initialRoute,
+    this.debug = false,
+  });
+
   /// The configuration for the adaptive theme
   final AdaptiveThemeConfig config;
 
@@ -134,17 +148,8 @@ class AdaptiveThemeApp extends StatelessWidget {
   /// Whether to show debug information
   final bool debug;
 
-  const AdaptiveThemeApp({
-    super.key,
-    required this.config,
-    required this.home,
-    this.routes,
-    this.initialRoute,
-    this.debug = false,
-  });
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return AdaptiveThemeWidget(
       config: config,
       debug: debug,
@@ -158,26 +163,27 @@ class AdaptiveThemeApp extends StatelessWidget {
 }
 
 class _AppContent extends StatelessWidget {
+  const _AppContent({required this.home, this.routes, this.initialRoute});
+
   final Widget home;
   final Map<String, WidgetBuilder>? routes;
   final String? initialRoute;
 
-  const _AppContent({
-    required this.home,
-    this.routes,
-    this.initialRoute,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: home,
-    );
+  Widget build(final BuildContext context) {
+    return Scaffold(body: home);
   }
 }
 
 /// Widget that provides theme-aware content with smooth transitions
 class AdaptiveThemeContent extends StatelessWidget {
+  const AdaptiveThemeContent({
+    super.key,
+    required this.child,
+    this.showLoadingIndicator = true,
+    this.loadingWidget,
+  });
+
   /// The content to display
   final Widget child;
 
@@ -187,32 +193,29 @@ class AdaptiveThemeContent extends StatelessWidget {
   /// Custom loading widget
   final Widget? loadingWidget;
 
-  const AdaptiveThemeContent({
-    super.key,
-    required this.child,
-    this.showLoadingIndicator = true,
-    this.loadingWidget,
-  });
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Consumer<AdaptiveThemeProvider>(
-      builder: (context, provider, child) {
-        if (!provider.isInitialized && showLoadingIndicator) {
-          return loadingWidget ??
-              const Center(
-                child: CircularProgressIndicator(),
-              );
-        }
+      builder:
+          (
+            final BuildContext context,
+            final AdaptiveThemeProvider provider,
+            final Widget? child,
+          ) {
+            if (!provider.isInitialized && showLoadingIndicator) {
+              return loadingWidget ??
+                  const Center(child: CircularProgressIndicator());
+            }
 
-        return AnimatedTheme(
-          duration: provider.config?.transitionDuration ??
-              Duration(milliseconds: 300),
-          curve: provider.config?.transitionCurve ?? Curves.easeInOut,
-          data: provider.theme,
-          child: this.child,
-        );
-      },
+            return AnimatedTheme(
+              duration:
+                  provider.config?.transitionDuration ??
+                  const Duration(milliseconds: 300),
+              curve: provider.config?.transitionCurve ?? Curves.easeInOut,
+              data: provider.theme,
+              child: this.child,
+            );
+          },
     );
   }
 }

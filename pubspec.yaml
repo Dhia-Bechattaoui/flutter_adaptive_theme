@@ -1,22 +1,26 @@
 name: flutter_adaptive_theme
-description: A Flutter package that automatically adapts your app's theme based on system settings, time of day, or user preferences with smooth transitions.
-version: 0.0.2
+description: A Flutter package for adaptive themes with Material 3 support and custom theme builders.
+version: 0.0.3
 homepage: https://github.com/dhia-bechattaoui/flutter_adaptive_theme
+repository: https://github.com/dhia-bechattaoui/flutter_adaptive_theme
+issue_tracker: https://github.com/Dhia-Bechattaoui/flutter_adaptive_theme/issues
+documentation: https://github.com/Dhia-Bechattaoui/flutter_adaptive_theme#readme
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.8.0 <4.0.0'
   flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.0
   provider: ^6.0.0
+  shared_preferences: ^2.0.0
 
 dev_dependencies:
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  test: ^1.0.0
 
 flutter:
   # No assets needed for this package 

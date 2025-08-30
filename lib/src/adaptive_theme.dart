@@ -6,6 +6,8 @@ import 'theme_config.dart';
 
 /// Main class for managing adaptive themes
 class AdaptiveTheme {
+  AdaptiveTheme();
+
   late AdaptiveThemeConfig _config;
   late SharedPreferences _prefs;
 
@@ -32,10 +34,8 @@ class AdaptiveTheme {
   /// Current configuration
   AdaptiveThemeConfig get config => _config;
 
-  AdaptiveTheme();
-
   /// Initialize the adaptive theme system
-  Future<void> initialize(AdaptiveThemeConfig config) async {
+  Future<void> initialize(final AdaptiveThemeConfig config) async {
     if (_isInitialized) {
       throw StateError('AdaptiveTheme is already initialized');
     }
@@ -43,7 +43,7 @@ class AdaptiveTheme {
     await _initialize(config);
   }
 
-  Future<void> _initialize(AdaptiveThemeConfig config) async {
+  Future<void> _initialize(final AdaptiveThemeConfig config) async {
     _config = config;
     _prefs = await SharedPreferences.getInstance();
 
@@ -64,12 +64,13 @@ class AdaptiveTheme {
 
     if (_config.debug) {
       debugPrint(
-          'AdaptiveTheme initialized with mode: ${_config.mode.displayName}');
+        'AdaptiveTheme initialized with mode: ${_config.mode.displayName}',
+      );
     }
   }
 
   /// Set the theme mode
-  Future<void> setMode(AdaptiveThemeMode mode) async {
+  Future<void> setMode(final AdaptiveThemeMode mode) async {
     if (!_isInitialized) {
       throw StateError('AdaptiveTheme is not initialized');
     }
@@ -106,7 +107,7 @@ class AdaptiveTheme {
   }
 
   /// Update the configuration
-  Future<void> updateConfig(AdaptiveThemeConfig newConfig) async {
+  Future<void> updateConfig(final AdaptiveThemeConfig newConfig) async {
     if (!_isInitialized) {
       throw StateError('AdaptiveTheme is not initialized');
     }
@@ -138,17 +139,17 @@ class AdaptiveTheme {
   ThemeData _getCurrentTheme() {
     switch (_config.mode) {
       case AdaptiveThemeMode.light:
-        return _config.lightTheme;
+        return _config.effectiveLightTheme;
       case AdaptiveThemeMode.dark:
-        return _config.darkTheme;
+        return _config.effectiveDarkTheme;
       case AdaptiveThemeMode.custom:
-        return _config.customTheme ?? _config.lightTheme;
+        return _config.effectiveCustomTheme ?? _config.effectiveLightTheme;
       case AdaptiveThemeMode.system:
         final brightness =
             WidgetsBinding.instance.platformDispatcher.platformBrightness;
         return brightness == Brightness.dark
-            ? _config.darkTheme
-            : _config.lightTheme;
+            ? _config.effectiveDarkTheme
+            : _config.effectiveLightTheme;
       case AdaptiveThemeMode.timeBased:
         return _getTimeBasedTheme();
     }
@@ -164,9 +165,9 @@ class AdaptiveTheme {
     // Check if it's dark theme time
     if (hour >= settings.darkThemeStartHour ||
         hour < settings.lightThemeStartHour) {
-      return _config.darkTheme;
+      return _config.effectiveDarkTheme;
     } else {
-      return _config.lightTheme;
+      return _config.effectiveLightTheme;
     }
   }
 
@@ -174,7 +175,9 @@ class AdaptiveTheme {
   void _setupTimeBasedTheme() {
     _timeBasedTimer?.cancel();
 
-    _timeBasedTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+    _timeBasedTimer = Timer.periodic(const Duration(minutes: 1), (
+      final Timer timer,
+    ) {
       if (_config.mode == AdaptiveThemeMode.timeBased) {
         final newTheme = _getTimeBasedTheme();
         _themeController.add(newTheme);
@@ -192,15 +195,15 @@ class AdaptiveTheme {
   void _listenToSystemTheme() {
     WidgetsBinding.instance.platformDispatcher.onPlatformBrightnessChanged =
         () {
-      if (_config.mode == AdaptiveThemeMode.system) {
-        final newTheme = _getCurrentTheme();
-        _themeController.add(newTheme);
+          if (_config.mode == AdaptiveThemeMode.system) {
+            final newTheme = _getCurrentTheme();
+            _themeController.add(newTheme);
 
-        if (_config.debug) {
-          debugPrint('System theme changed: ${newTheme.brightness}');
-        }
-      }
-    };
+            if (_config.debug) {
+              debugPrint('System theme changed: ${newTheme.brightness}');
+            }
+          }
+        };
   }
 
   /// Load saved preferences
@@ -226,7 +229,9 @@ class AdaptiveTheme {
   Future<void> _savePreferences() async {
     try {
       await _prefs.setString(
-          '${_config.storageKey}_mode', _config.mode.stringValue);
+        '${_config.storageKey}_mode',
+        _config.mode.stringValue,
+      );
 
       if (_config.debug) {
         debugPrint('Saved theme mode: ${_config.mode.displayName}');

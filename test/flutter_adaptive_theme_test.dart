@@ -31,8 +31,9 @@ void main() {
       );
     });
 
-    testWidgets('AdaptiveThemeApp should build without errors',
-        (WidgetTester tester) async {
+    testWidgets('AdaptiveThemeApp should build without errors', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         AdaptiveThemeApp(
           config: testConfig,
@@ -43,21 +44,21 @@ void main() {
       expect(find.text('Test'), findsOneWidget);
     });
 
-    testWidgets('AdaptiveThemeContent should show loading indicator initially',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: ChangeNotifierProvider(
-            create: (_) => AdaptiveThemeProvider(),
-            child: AdaptiveThemeContent(
-              child: Text('Content'),
+    testWidgets(
+      'AdaptiveThemeContent should show loading indicator initially',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: ChangeNotifierProvider(
+              create: (_) => AdaptiveThemeProvider(),
+              child: AdaptiveThemeContent(child: Text('Content')),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    });
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      },
+    );
 
     test('AdaptiveThemeMode should have correct display names', () {
       expect(AdaptiveThemeMode.system.displayName, equals('System'));
@@ -76,18 +77,30 @@ void main() {
     });
 
     test('AdaptiveThemeMode.fromString should work correctly', () {
-      expect(AdaptiveThemeModeExtension.fromString('system'),
-          equals(AdaptiveThemeMode.system));
-      expect(AdaptiveThemeModeExtension.fromString('light'),
-          equals(AdaptiveThemeMode.light));
-      expect(AdaptiveThemeModeExtension.fromString('dark'),
-          equals(AdaptiveThemeMode.dark));
-      expect(AdaptiveThemeModeExtension.fromString('time_based'),
-          equals(AdaptiveThemeMode.timeBased));
-      expect(AdaptiveThemeModeExtension.fromString('custom'),
-          equals(AdaptiveThemeMode.custom));
-      expect(AdaptiveThemeModeExtension.fromString('invalid'),
-          equals(AdaptiveThemeMode.system));
+      expect(
+        AdaptiveThemeModeExtension.fromString('system'),
+        equals(AdaptiveThemeMode.system),
+      );
+      expect(
+        AdaptiveThemeModeExtension.fromString('light'),
+        equals(AdaptiveThemeMode.light),
+      );
+      expect(
+        AdaptiveThemeModeExtension.fromString('dark'),
+        equals(AdaptiveThemeMode.dark),
+      );
+      expect(
+        AdaptiveThemeModeExtension.fromString('time_based'),
+        equals(AdaptiveThemeMode.timeBased),
+      );
+      expect(
+        AdaptiveThemeModeExtension.fromString('custom'),
+        equals(AdaptiveThemeMode.custom),
+      );
+      expect(
+        AdaptiveThemeModeExtension.fromString('invalid'),
+        equals(AdaptiveThemeMode.system),
+      );
     });
 
     test('TimeBasedThemeSettings should have correct default values', () {
@@ -156,8 +169,9 @@ void main() {
   });
 
   group('AdaptiveTheme Integration Tests', () {
-    testWidgets('Provider should be available in widget tree',
-        (WidgetTester tester) async {
+    testWidgets('Provider should be available in widget tree', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         AdaptiveThemeApp(
           config: AdaptiveThemeConfig(
